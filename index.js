@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 app.post('/upload', async (req, res) => {
   try {
     const jsonData = req.body.data; // This is the JSON data we want to upload
-    const filename = req.body.filename; // This is the JSON data we want to upload
+    const filename = req.body.filename || "myfile.jsonl"; // This is the JSON data we want to upload
     const apiKey = req.headers['x-api-key']; // API key from the request headers
 
     if (!apiKey) {
@@ -18,9 +18,9 @@ app.post('/upload', async (req, res) => {
     }
     console.log(jsonData,'jsonData')
     const content = JSON.stringify(jsonData); // 将对象转换为字符串
-    const buffer = Buffer.from(content); // 将字符串转换为 Buffer
+    // const buffer = Buffer.from(content); // 将字符串转换为 Buffer
     
-    const file = new File([buffer], filename || "myfile.json");
+    fs.writeFileSync('./temp/'+filename,content)
    
     // Create a Readable stream from the Buffer
     const configuration = new Configuration({
@@ -29,10 +29,11 @@ app.post('/upload', async (req, res) => {
     const openai = new OpenAIApi(configuration);
     try{
       const response = await openai.createFile(
-        file.stream.bind(file),
+        fs.createReadStream('./temp/'+filename),
         "fine-tune"
       );
       res.status(200).json(response.data);
+      fs.unlinkSync('./temp/'+filename)
     } catch(err){
       console.error(err, 'createFile')
       res.status(500).send(err);
