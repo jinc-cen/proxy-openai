@@ -33,8 +33,8 @@ app.post('/upload', async (req, res) => {
 
     res.status(200).send(response);
   } catch (err) {
-    console.error(err);
-    res.status(500).send({ error: 'An error occurred' });
+    console.error(err.data);
+    res.status(500).send({ error: 'An error occurred' , data: err.data});
   }
 });
 
