@@ -3,6 +3,7 @@ const fs = require('fs');
 const { Configuration, OpenAIApi } = require('openai');
 const bodyParser = require('body-parser'); // To parse JSON bodies
 const { Readable } = require('stream'); // Add this line
+const { resolve } = require('path');
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,11 +17,12 @@ app.post('/upload', async (req, res) => {
     if (!apiKey) {
       return res.status(401).send({ error: 'Missing API key' });
     }
-    console.log(jsonData,'jsonData')
     const content = JSON.stringify(jsonData); // 将对象转换为字符串
     // const buffer = Buffer.from(content); // 将字符串转换为 Buffer
-    
-    fs.writeFileSync(__dirname+filename,content)
+    const fileTempPath = resolve([__dirname,filename])
+    console.log(jsonData,'jsonData')
+    console.log(fileTempPath,'fileTempPath')
+    fs.writeFileSync(fileTempPath, content)
    
     // Create a Readable stream from the Buffer
     const configuration = new Configuration({
@@ -29,11 +31,11 @@ app.post('/upload', async (req, res) => {
     const openai = new OpenAIApi(configuration);
     try{
       const response = await openai.createFile(
-        fs.createReadStream(__dirname+filename),
+        fs.createReadStream(fileTempPath),
         "fine-tune"
       );
       res.status(200).json(response.data);
-      fs.unlinkSync(__dirname+filename)
+      fs.unlinkSync(fileTempPath)
     } catch(err){
       console.error(err, 'createFile')
       res.status(500).send(err);
