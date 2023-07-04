@@ -10,6 +10,7 @@ app.use(bodyParser.json());
 app.post('/upload', async (req, res) => {
   try {
     const jsonData = req.body.data; // This is the JSON data we want to upload
+    const filename = req.body.filename; // This is the JSON data we want to upload
     const apiKey = req.headers['x-api-key']; // API key from the request headers
 
     if (!apiKey) {
@@ -19,7 +20,7 @@ app.post('/upload', async (req, res) => {
     const content = JSON.stringify(jsonData); // 将对象转换为字符串
     const buffer = Buffer.from(content); // 将字符串转换为 Buffer
     
-    const file = new File([buffer], "myfile.json");
+    const file = new File([buffer], filename || "myfile.json");
     const readableStream = file.stream();
     
     // Create a Readable stream from the Buffer
@@ -45,5 +46,18 @@ app.post('/upload', async (req, res) => {
     res.status(500).send({ error: 'An error occurred' , data: err.data});
   }
 });
+app.get('/files', async (req,res) => {
+  const apiKey = req.headers['x-api-key']; 
+  const configuration = new Configuration({
+    apiKey: apiKey,
+  });
+  const openai = new OpenAIApi(configuration);
+  try {
+    const response = await openai.listFiles();
+    res.status(200).send(response);
+  } catch (error) {
+    res.status(500).send({error});
+  }
+})
 
 app.listen(process.env.PORT || 8080, () => console.log('Server running on port '+process.env.PORT || 3000));
