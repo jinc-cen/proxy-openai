@@ -19,7 +19,7 @@ app.post('/upload', async (req, res) => {
     }
     const content = JSON.stringify(jsonData); // 将对象转换为字符串
     // const buffer = Buffer.from(content); // 将字符串转换为 Buffer
-    const fileTempPath = resolve([__dirname,filename])
+    const fileTempPath = resolve(__dirname,filename)
     console.log(jsonData,'jsonData')
     console.log(fileTempPath,'fileTempPath')
     fs.writeFileSync(fileTempPath, content)
