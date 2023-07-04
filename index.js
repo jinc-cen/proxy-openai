@@ -20,7 +20,7 @@ app.post('/upload', async (req, res) => {
     const content = JSON.stringify(jsonData); // 将对象转换为字符串
     // const buffer = Buffer.from(content); // 将字符串转换为 Buffer
     
-    fs.writeFileSync('./temp/'+filename,content)
+    fs.writeFileSync(__dirname+filename,content)
    
     // Create a Readable stream from the Buffer
     const configuration = new Configuration({
@@ -29,11 +29,11 @@ app.post('/upload', async (req, res) => {
     const openai = new OpenAIApi(configuration);
     try{
       const response = await openai.createFile(
-        fs.createReadStream('./temp/'+filename),
+        fs.createReadStream(__dirname+filename),
         "fine-tune"
       );
       res.status(200).json(response.data);
-      fs.unlinkSync('./temp/'+filename)
+      fs.unlinkSync(__dirname+filename)
     } catch(err){
       console.error(err, 'createFile')
       res.status(500).send(err);
