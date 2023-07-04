@@ -14,21 +14,22 @@ app.post('/upload', async (req, res) => {
     if (!apiKey) {
       return res.status(401).send({ error: 'Missing API key' });
     }
-
+    const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+    const file = new File([blob], 'data.jsonl');
     // Convert JSON to string and write to file
-    const filePath = 'mydata.jsonl';
-    fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2));
+    // const filePath = 'mydata.jsonl';
+    // fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2));
 
     // Create OpenAI API instance with the API key from the headers
     const configuration = new Configuration({
       apiKey: apiKey,
     });
     const openai = new OpenAIApi(configuration);
-
+    
     // Upload file to OpenAI
     const response = await openai.createFile(
-      fs.createReadStream(filePath),
-      "application/json"
+      file,
+      "fine-tune"
     );
 
     res.status(200).send(response);
