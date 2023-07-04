@@ -22,13 +22,13 @@ app.post('/upload', async (req, res) => {
     if (!apiKey) {
       return res.status(401).send({ error: 'Missing API key' });
     }
-    const content = JSON.stringify(jsonData); // 将对象转换为字符串
+    // const content = JSON.stringify(jsonData); // 将对象转换为字符串
     // const buffer = Buffer.from(content); // 将字符串转换为 Buffer
     const fileTempPath = resolve(__dirname,filename)
     console.log(jsonData,'jsonData')
     console.log(fileTempPath,'fileTempPath')
     
-    jsonToJsonLines(fileTempPath, content)
+    jsonToJsonLines(fileTempPath, jsonData)
    
     // Create a Readable stream from the Buffer
     const configuration = new Configuration({
