@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const { Configuration, OpenAIApi } = require('openai');
 const bodyParser = require('body-parser'); // To parse JSON bodies
+const { Readable } = require('stream'); // Add this line
 
 const app = express();
 app.use(bodyParser.json());
