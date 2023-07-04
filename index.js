@@ -4,7 +4,7 @@ const { Configuration, OpenAIApi } = require('openai');
 const bodyParser = require('body-parser'); // To parse JSON bodies
 const { Readable } = require('stream'); // Add this line
 const { resolve } = require('path');
-
+console.log(fs.createReadStream(resolve(__dirname,'myfile.jsonl')))
 const app = express();
 function jsonToJsonLines(outputPath,jsonData ) {
   const lines = jsonData.map((data) => JSON.stringify(data));
