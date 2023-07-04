@@ -35,7 +35,7 @@ app.post('/upload', async (req, res) => {
         readableStream,
         "fine-tune"
       );
-      res.status(200).send(response);
+      res.status(200).json(response.data);
     } catch(err){
       console.error(err.response)
       res.status(500).send({error: err.response});
@@ -54,7 +54,7 @@ app.get('/files', async (req,res) => {
   const openai = new OpenAIApi(configuration);
   try {
     const response = await openai.listFiles();
-    res.status(200).send(response);
+    res.status(200).json(response.data);
   } catch (error) {
     res.status(500).send({error});
   }
