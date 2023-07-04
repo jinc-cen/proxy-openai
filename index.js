@@ -37,8 +37,8 @@ app.post('/upload', async (req, res) => {
       );
       res.status(200).json(response.data);
     } catch(err){
-      console.error(err.response)
-      res.status(500).send({error: err.response});
+      console.error(err, 'createFile')
+      res.status(500).send(err);
     }
     
   } catch (err) {
