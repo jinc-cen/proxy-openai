@@ -21,18 +21,15 @@ app.post('/upload', async (req, res) => {
     const buffer = Buffer.from(content); // 将字符串转换为 Buffer
     
     const file = new File([buffer], filename || "myfile.json");
-    const readableStream = file.stream();
-    
+   
     // Create a Readable stream from the Buffer
-    
     const configuration = new Configuration({
       apiKey: apiKey,
     });
     const openai = new OpenAIApi(configuration);
-
     try{
       const response = await openai.createFile(
-        readableStream,
+        file.stream.bind(file),
         "fine-tune"
       );
       res.status(200).json(response.data);
