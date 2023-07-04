@@ -6,6 +6,11 @@ const { Readable } = require('stream'); // Add this line
 const { resolve } = require('path');
 
 const app = express();
+function jsonToJsonLines(outputPath,jsonData ) {
+  const lines = jsonData.map((data) => JSON.stringify(data));
+
+  fs.writeFileSync(outputPath, lines.join('\n'));
+}
 app.use(bodyParser.json());
 
 app.post('/upload', async (req, res) => {
@@ -22,7 +27,8 @@ app.post('/upload', async (req, res) => {
     const fileTempPath = resolve(__dirname,filename)
     console.log(jsonData,'jsonData')
     console.log(fileTempPath,'fileTempPath')
-    fs.writeFileSync(fileTempPath, content)
+    
+    jsonToJsonLines(fileTempPath, content)
    
     // Create a Readable stream from the Buffer
     const configuration = new Configuration({
@@ -35,7 +41,7 @@ app.post('/upload', async (req, res) => {
         "fine-tune"
       );
       res.status(200).json(response.data);
-      fs.unlinkSync(fileTempPath)
+      // fs.unlinkSync(fileTempPath)
     } catch(err){
       console.error(err, 'createFile')
       res.status(500).send(err);
