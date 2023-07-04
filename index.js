@@ -33,9 +33,9 @@ app.post('/upload', async (req, res) => {
 
     res.status(200).send(response);
   } catch (err) {
-    console.error(err.response);
+    console.error(err);
     res.status(500).send({ error: 'An error occurred' , data: err.data});
   }
 });
 
-app.listen(process.env.PORT || 3000, () => console.log('Server running on port 3000'));
+app.listen(process.env.PORT || 3000, () => console.log('Server running on port '+process.env.PORT || 3000));
