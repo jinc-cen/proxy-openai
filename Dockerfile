@@ -1,5 +1,5 @@
 # 使用 Node.js v20.3.1
-FROM node:20.3.1
+FROM node:16
 
 # 创建 app 目录
 WORKDIR /usr/src/app
