@@ -2,9 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const { Configuration, OpenAIApi } = require('openai');
 const bodyParser = require('body-parser'); // To parse JSON bodies
-const { Readable } = require('stream'); // Add this line
 const { resolve } = require('path');
-console.log(fs.createReadStream(resolve(__dirname,'myfile.jsonl')))
 const app = express();
 function jsonToJsonLines(outputPath,jsonData ) {
   const lines = jsonData.map((data) => JSON.stringify(data));
@@ -41,7 +39,7 @@ app.post('/upload', async (req, res) => {
         "fine-tune"
       );
       res.status(200).json(response.data);
-      // fs.unlinkSync(fileTempPath)
+      fs.unlinkSync(fileTempPath)
     } catch(err){
       console.error(err, 'createFile')
       res.status(500).send(err);
