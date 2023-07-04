@@ -15,6 +15,7 @@ app.post('/upload', async (req, res) => {
     if (!apiKey) {
       return res.status(401).send({ error: 'Missing API key' });
     }
+    console.log(jsonData,'jsonData')
     const buffer = Buffer.from(JSON.stringify(jsonData, null, 2), 'utf-8');
 
     // Create a Readable stream from the Buffer
@@ -27,12 +28,17 @@ app.post('/upload', async (req, res) => {
     });
     const openai = new OpenAIApi(configuration);
 
-    const response = await openai.createFile(
-      stream,
-      "fine-tune"
-    );
-
-    res.status(200).send(response);
+    try{
+      const response = await openai.createFile(
+        stream,
+        "fine-tune"
+      );
+      res.status(200).send(response);
+    } catch(err){
+      console.error(err.response)
+      res.status(500).send({error: err.response});
+    }
+    
   } catch (err) {
     console.error(err);
     res.status(500).send({ error: 'An error occurred' , data: err.data});
