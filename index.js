@@ -11,7 +11,15 @@ function jsonToJsonLines(jsonData ) {
   return lines.join('\n')
 }
 app.use(bodyParser.json());
-
+app.use((req, res, next)=>{
+  const apiKey = req.headers['x-api-key']; 
+  const configuration = new Configuration({
+    apiKey: apiKey,
+  });
+  const openai = new OpenAIApi(configuration);
+  req.openai = openai
+  next()
+})
 app.post('/upload', async (req, res) => {
   try {
     const jsonData = req.body.data; // This is the JSON data we want to upload
@@ -31,14 +39,9 @@ app.post('/upload', async (req, res) => {
     console.log(fileTempPath,'fileTempPath')
     
     fs.writeFileSync(fileTempPath, content)
-   
-    // Create a Readable stream from the Buffer
-    const configuration = new Configuration({
-      apiKey: apiKey,
-    });
-    const openai = new OpenAIApi(configuration);
+    
     try{
-      const response = await openai.createFile(
+      const response = await req.openai.createFile(
         fs.createReadStream(fileTempPath),
         // file.stream.bind(file),
         "fine-tune"
@@ -56,17 +59,35 @@ app.post('/upload', async (req, res) => {
   }
 });
 app.get('/files', async (req,res) => {
-  const apiKey = req.headers['x-api-key']; 
-  const configuration = new Configuration({
-    apiKey: apiKey,
-  });
-  const openai = new OpenAIApi(configuration);
   try {
-    const response = await openai.listFiles();
+    const response = await req.openai.listFiles();
     res.status(200).json(response.data);
   } catch (error) {
     res.status(500).send({error});
   }
 })
-
+app.post('/search', async (req,res) => {
+  try {
+    const response = await req.openai.retrieveFile(req.body.fileId);
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).send({error});
+  }
+})
+app.post('/delete', async (req,res) => {
+  try {
+    const response = await req.openai.deleteFile(req.body.fileId);
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).send({error});
+  }
+})
+app.post('/download', async (req,res) => {
+  try {
+    const response = await req.openai.downloadFile(req.body.fileId);
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).send({error});
+  }
+})
 app.listen(process.env.PORT || 8080, () => console.log('Server running on port '+process.env.PORT || 3000));
