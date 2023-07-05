@@ -4,10 +4,11 @@ const { Configuration, OpenAIApi } = require('openai');
 const bodyParser = require('body-parser'); // To parse JSON bodies
 const { resolve } = require('path');
 const app = express();
-function jsonToJsonLines(outputPath,jsonData ) {
+function jsonToJsonLines(jsonData ) {
   const lines = jsonData.map((data) => JSON.stringify(data));
 
-  fs.writeFileSync(outputPath, lines.join('\n'));
+  // fs.writeFileSync(outputPath, lines.join('\n'));
+  return lines.join('\n')
 }
 app.use(bodyParser.json());
 
@@ -20,13 +21,16 @@ app.post('/upload', async (req, res) => {
     if (!apiKey) {
       return res.status(401).send({ error: 'Missing API key' });
     }
-    // const content = JSON.stringify(jsonData); // 将对象转换为字符串
-    // const buffer = Buffer.from(content); // 将字符串转换为 Buffer
+    const content = jsonToJsonLines(jsonData); // 将对象转换为字符串
+    const buffer = Buffer.from(content); // 将字符串转换为 Buffer
+    
+    const file = new File([buffer], filename || "myfile.json");
+   
     const fileTempPath = resolve(__dirname,filename)
     console.log(jsonData,'jsonData')
     console.log(fileTempPath,'fileTempPath')
     
-    jsonToJsonLines(fileTempPath, jsonData)
+    // fs.writeFileSync(fileTempPath, content)
    
     // Create a Readable stream from the Buffer
     const configuration = new Configuration({
@@ -35,7 +39,8 @@ app.post('/upload', async (req, res) => {
     const openai = new OpenAIApi(configuration);
     try{
       const response = await openai.createFile(
-        fs.createReadStream(fileTempPath),
+        // fs.createReadStream(fileTempPath),
+        file.stream.bind(file),
         "fine-tune"
       );
       res.status(200).json(response.data);
