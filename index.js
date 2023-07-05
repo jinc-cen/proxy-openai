@@ -22,15 +22,15 @@ app.post('/upload', async (req, res) => {
       return res.status(401).send({ error: 'Missing API key' });
     }
     const content = jsonToJsonLines(jsonData); // 将对象转换为字符串
-    const buffer = Buffer.from(content); // 将字符串转换为 Buffer
+    // const buffer = Buffer.from(content); // 将字符串转换为 Buffer
     
-    const file = new File([buffer], filename || "myfile.json");
+    // const file = new File([buffer], filename || "myfile.json");
    
     const fileTempPath = resolve(__dirname,filename)
     console.log(jsonData,'jsonData')
     console.log(fileTempPath,'fileTempPath')
     
-    // fs.writeFileSync(fileTempPath, content)
+    fs.writeFileSync(fileTempPath, content)
    
     // Create a Readable stream from the Buffer
     const configuration = new Configuration({
@@ -39,8 +39,8 @@ app.post('/upload', async (req, res) => {
     const openai = new OpenAIApi(configuration);
     try{
       const response = await openai.createFile(
-        // fs.createReadStream(fileTempPath),
-        file.stream.bind(file),
+        fs.createReadStream(fileTempPath),
+        // file.stream.bind(file),
         "fine-tune"
       );
       res.status(200).json(response.data);
