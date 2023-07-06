@@ -5,8 +5,8 @@ const bodyParser = require('body-parser'); // To parse JSON bodies
 const { resolve } = require('path');
 const app = express();
 function jsonToJsonLines(jsonData ) {
+  let l = (typeof jsonData).toLocaleLowerCase() === 'string' ? JSON.parse(jsonData) : jsonData
   const lines = jsonData.map((data) => JSON.stringify(data));
-
   // fs.writeFileSync(outputPath, lines.join('\n'));
   return lines.join('\n')
 }
