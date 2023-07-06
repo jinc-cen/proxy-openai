@@ -25,7 +25,7 @@ app.post('/upload', async (req, res) => {
     const jsonData = req.body.data; // This is the JSON data we want to upload
     const filename = req.body.filename || "myfile.jsonl"; // This is the JSON data we want to upload
     const apiKey = req.headers['x-api-key']; // API key from the request headers
-
+    console.log(jsonData,'jsonData', typeof jsonData)
     if (!apiKey) {
       return res.status(401).send({ error: 'Missing API key' });
     }
@@ -35,8 +35,8 @@ app.post('/upload', async (req, res) => {
     // const file = new File([buffer], filename || "myfile.json");
    
     const fileTempPath = resolve(__dirname,filename)
-    console.log(jsonData,'jsonData')
     console.log(fileTempPath,'fileTempPath')
+    
     
     fs.writeFileSync(fileTempPath, content)
     
