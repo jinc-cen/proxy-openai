@@ -99,7 +99,7 @@ app.post('/ft/create', async (req,res) => {
     });
     res.status(200).json(response.data);
   } catch (error) {
-    console.error(error)
+    console.error(error.response.data.error)
     res.status(500).send({error});
   }
 })
