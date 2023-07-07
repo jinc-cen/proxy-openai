@@ -91,6 +91,7 @@ app.post('/download', async (req,res) => {
   }
 })
 app.post('/ft/create', async (req,res) => {
+  console.log(typeof req.body,req.body,'ssss')
   try {
     const response = await req.openai.createFineTune({
       // training_file: req.body.fileId,
