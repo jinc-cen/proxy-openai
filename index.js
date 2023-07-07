@@ -98,6 +98,7 @@ app.post('/ft/create', async (req,res) => {
     });
     res.status(200).json(response.data);
   } catch (error) {
+    console.error(error)
     res.status(500).send({error});
   }
 })
