@@ -92,7 +92,7 @@ app.post('/download', async (req,res) => {
 })
 app.post('/ft/create', async (req,res) => {
   try {
-    const response = await openai.createFineTune({
+    const response = await req.openai.createFineTune({
       // training_file: req.body.fileId,
       ...req.body
     });
@@ -104,7 +104,7 @@ app.post('/ft/create', async (req,res) => {
 })
 app.get('/ft/list', async (req,res) => {
   try {
-    const response = await openai.listFineTunes();
+    const response = await req.openai.listFineTunes();
     res.status(200).json(response.data);
   } catch (error) {
     res.status(500).send({error});
@@ -112,7 +112,7 @@ app.get('/ft/list', async (req,res) => {
 })
 app.post('/ft/search', async (req,res) => {
   try {
-    const response = await openai.retrieveFineTune(req.body.fineTuneId);
+    const response = await req.openai.retrieveFineTune(req.body.fineTuneId);
     res.status(200).json(response.data);
   } catch (error) {
     res.status(500).send({error});
@@ -120,7 +120,7 @@ app.post('/ft/search', async (req,res) => {
 })
 app.post('/ft/cancel', async (req,res) => {
   try {
-    const response = await openai.cancelFineTune(req.body.fineTuneId);
+    const response = await req.openai.cancelFineTune(req.body.fineTuneId);
     res.status(200).json(response.data);
   } catch (error) {
     res.status(500).send({error});
@@ -128,7 +128,7 @@ app.post('/ft/cancel', async (req,res) => {
 })
 app.post('/ft/detail', async (req,res) => {
   try {
-    const response = await openai.listFineTuneEvents(req.body.fineTuneId);
+    const response = await req.openai.listFineTuneEvents(req.body.fineTuneId);
     res.status(200).json(response.data);
   } catch (error) {
     res.status(500).send({error});
@@ -136,7 +136,7 @@ app.post('/ft/detail', async (req,res) => {
 })
 app.post('/ft/delete', async (req,res) => {
   try {
-    const response = await openai.deleteModel(req.body.model);
+    const response = await req.openai.deleteModel(req.body.model);
     res.status(200).json(response.data);
   } catch (error) {
     res.status(500).send({error});
