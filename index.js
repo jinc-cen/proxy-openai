@@ -108,6 +108,7 @@ app.get('/ft/list', async (req,res) => {
     const response = await req.openai.listFineTunes();
     res.status(200).json(response.data);
   } catch (error) {
+    console.error(error.response.data.error)
     res.status(500).send({error});
   }
 })
@@ -116,6 +117,7 @@ app.post('/ft/search', async (req,res) => {
     const response = await req.openai.retrieveFineTune(req.body.fineTuneId);
     res.status(200).json(response.data);
   } catch (error) {
+    console.error(error.response.data.error)
     res.status(500).send({error});
   }
 })
@@ -124,6 +126,7 @@ app.post('/ft/cancel', async (req,res) => {
     const response = await req.openai.cancelFineTune(req.body.fineTuneId);
     res.status(200).json(response.data);
   } catch (error) {
+    console.error(error.response.data.error)
     res.status(500).send({error});
   }
 })
@@ -132,6 +135,7 @@ app.post('/ft/detail', async (req,res) => {
     const response = await req.openai.listFineTuneEvents(req.body.fineTuneId);
     res.status(200).json(response.data);
   } catch (error) {
+    console.error(error.response.data.error)
     res.status(500).send({error});
   }
 })
@@ -140,6 +144,18 @@ app.post('/ft/delete', async (req,res) => {
     const response = await req.openai.deleteModel(req.body.model);
     res.status(200).json(response.data);
   } catch (error) {
+    console.error(error.response.data.error)
+    res.status(500).send({error});
+  }
+})
+app.post('/chat', async (req, res) => {
+  try {
+    const response = await req.openai.createCompletion({
+      ...req.body
+    });
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error(error.response.data.error)
     res.status(500).send({error});
   }
 })
