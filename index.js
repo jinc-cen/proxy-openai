@@ -161,28 +161,40 @@ app.post('/chat', async (req, res) => {
   }
 })
 app.post('/usage', async (req, res) => {
-  const _res = await fetch("https://api.openai.com/dashboard/billing/credit_grants", {
-    "headers": {
-      "accept": "*/*",
-      "accept-language": "zh-TW,zh;q=0.9,en;q=0.8,zh-CN;q=0.7",
-      "authorization": `Bearer ${req.apiKey}`,
-      "cache-control": "no-cache",
-      "openai-organization": "org-6aXzv20Nb0wuz78sNjkhXAdS",
-      "pragma": "no-cache",
-      "sec-ch-ua": "\"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Google Chrome\";v=\"114\"",
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": "\"macOS\"",
-      "sec-fetch-dest": "empty",
-      "sec-fetch-mode": "cors",
-      "sec-fetch-site": "same-site",
-      "Referer": "https://platform.openai.com/",
-      "Referrer-Policy": "strict-origin-when-cross-origin"
-    },
-    "body": null,
-    "method": "GET"
-  });
-  res.pipe(_res.body)
-  // _res.body .json()
-})
+  try {
+    const _res = await fetch("https://api.openai.com/dashboard/billing/credit_grants", {
+      "headers": {
+        "accept": "*/*",
+        "accept-language": "zh-TW,zh;q=0.9,en;q=0.8,zh-CN;q=0.7",
+        "authorization": `Bearer ${req.apiKey}`,
+        "cache-control": "no-cache",
+        "openai-organization": "org-6aXzv20Nb0wuz78sNjkhXAdS",
+        "pragma": "no-cache",
+        "sec-ch-ua": "\"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Google Chrome\";v=\"114\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"macOS\"",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-site",
+        "Referer": "https://platform.openai.com/",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+      },
+      "body": null,
+      "method": "GET"
+    });
+
+    if (!_res.ok) {
+      throw new Error(`Server response: ${_res.status}`);
+    }
+
+    const data = await _res.json();
+    res.json(data);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
+
 
 app.listen(process.env.PORT || 8080, () => console.log('Server running on port ' + process.env.PORT || 3000));
