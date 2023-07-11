@@ -181,7 +181,7 @@ app.post('/usage', async (req, res) => {
     "body": null,
     "method": "GET"
   });
-  res.pipe(_res)
+  res.pipe(_res.body)
   // _res.body .json()
 })
 
