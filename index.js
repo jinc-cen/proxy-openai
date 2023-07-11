@@ -165,7 +165,7 @@ app.post('/usage', async (req, res) => {
     "headers": {
       "accept": "*/*",
       "accept-language": "zh-TW,zh;q=0.9,en;q=0.8,zh-CN;q=0.7",
-      "authorization": `Bearer ${apiKey}`,
+      "authorization": `Bearer ${req.apiKey}`,
       "cache-control": "no-cache",
       "openai-organization": "org-6aXzv20Nb0wuz78sNjkhXAdS",
       "pragma": "no-cache",
