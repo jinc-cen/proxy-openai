@@ -13,19 +13,22 @@ function jsonToJsonLines(jsonData) {
 app.use(bodyParser.json());
 app.use((req, res, next) => {
   const apiKey = req.headers['x-api-key'];
+  const org = req.headers['x-org']; // API key from the request headers
   const configuration = new Configuration({
     apiKey: apiKey,
   });
   const openai = new OpenAIApi(configuration);
   req.openai = openai
   req.apiKey = apiKey
+  req.org = org
   next()
 })
 app.post('/upload', async (req, res) => {
   try {
     const jsonData = req.body.data; // This is the JSON data we want to upload
     const filename = req.body.filename || "myfile.jsonl"; // This is the JSON data we want to upload
-    const apiKey = req.headers['x-api-key']; // API key from the request headers
+    const apiKey = req.apiKey; // API key from the request headers
+
     console.log(jsonData, 'jsonData', typeof jsonData)
     if (!apiKey) {
       return res.status(401).send({ error: 'Missing API key' });
@@ -168,7 +171,7 @@ app.post('/usage', async (req, res) => {
         "accept-language": "zh-TW,zh;q=0.9,en;q=0.8,zh-CN;q=0.7",
         "authorization": `Bearer ${req.apiKey}`,
         "cache-control": "no-cache",
-        "openai-organization": "org-6aXzv20Nb0wuz78sNjkhXAdS",
+        "openai-organization": req.org,
         "pragma": "no-cache",
         "sec-ch-ua": "\"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Google Chrome\";v=\"114\"",
         "sec-ch-ua-mobile": "?0",
