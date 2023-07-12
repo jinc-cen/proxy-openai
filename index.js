@@ -10,7 +10,9 @@ function jsonToJsonLines(jsonData) {
   // fs.writeFileSync(outputPath, lines.join('\n'));
   return lines.join('\n')
 }
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+  limit: '50mb',
+}));
 app.use((req, res, next) => {
   const apiKey = req.headers['x-api-key'];
   const org = req.headers['x-org']; // API key from the request headers
